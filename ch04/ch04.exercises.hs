@@ -14,8 +14,9 @@ safeLast (_:xs) = safeLast xs
 safeInit :: [a] -> Maybe [a]
 safeInit []     = Nothing
 safeInit (_:[]) = Just []
-safeInit (x:xs) = Just (x : case safeInit xs of Nothing -> []
-                                                Just ys -> ys)
+safeInit (x:xs) = Just (x : case safeInit xs of
+                                 Nothing -> []
+                                 Just ys -> ys)
 
 splitWith :: (a -> Bool) -> [a] -> [[a]]
 splitWith f xs = case dropWhile f xs of
