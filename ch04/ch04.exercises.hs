@@ -16,3 +16,9 @@ safeInit []     = Nothing
 safeInit (_:[]) = Just []
 safeInit (x:xs) = Just (x : case safeInit xs of Nothing -> []
                                                 Just ys -> ys)
+
+splitWith :: (a -> Bool) -> [a] -> [[a]]
+splitWith f xs = case dropWhile f xs of
+                      [] -> []
+                      ys -> z : splitWith f zs
+                            where (z, zs) = break f ys
