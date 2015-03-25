@@ -1,3 +1,6 @@
+fixLines :: String -> String
+fixLines input = unlines $ splitLines input
+
 splitLines :: String -> [String]
 splitLines [] = []
 splitLines cs =
