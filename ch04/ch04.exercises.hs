@@ -68,3 +68,11 @@ myTakeWhile_fold f xs = fst $ foldl' step ([], True) xs
   where step (taken, taking) x
           | taking && f x = (taken ++ [x], True )
           | otherwise     = (taken       , False)
+
+-- Chapter 4, Section 2, Exercise 5
+myGroupBy :: (a -> a -> Bool) -> [a] -> [[a]]
+myGroupBy f xs = fst $ foldl' step ([], xs) xs
+  where step (groups, xs) x
+          | null run  = (groups, rest)
+          | otherwise = (groups ++ [run], rest)
+          where (run, rest) = span (f x) xs
