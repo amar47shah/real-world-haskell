@@ -1,3 +1,4 @@
+-- Chapter 4, Section 1, Exercise 3
 import System.Environment (getArgs)
 
 interactWith function inputFile outputFile = do

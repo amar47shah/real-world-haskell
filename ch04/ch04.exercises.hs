@@ -1,3 +1,4 @@
+-- Chapter 4, Section 1, Exercise 1
 safeHead :: [a] -> Maybe a
 safeHead []    = Nothing
 safeHead (x:_) = Just x
@@ -18,6 +19,7 @@ safeInit (x:xs) = Just (x : case safeInit xs of
                                  Nothing -> []
                                  Just ys -> ys)
 
+-- Chapter 4, Section 1, Exercise 2
 splitWith :: (a -> Bool) -> [a] -> [[a]]
 splitWith f xs = case dropWhile f xs of
                       [] -> []
