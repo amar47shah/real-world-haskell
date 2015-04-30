@@ -1,5 +1,5 @@
 import Data.Char (digitToInt)
-import Data.List (isInfixOf)
+import Data.List (foldl', isInfixOf)
 
 -- Chapter 4, Section 1, Exercise 1
 safeHead :: [a] -> Maybe a
@@ -55,3 +55,16 @@ asInt_either        cs  = Right (fst $ foldr step (0, 1) cs)
 -- Chapter 4, Section 2, Exercise 3
 myConcat :: [[a]] -> [a]
 myConcat = foldr (++) []
+
+-- Chapter 4, Section 2, Exercise 4
+myTakeWhile :: (a -> Bool) -> [a] -> [a]
+myTakeWhile f (x:xs)
+  | f x              = x : myTakeWhile f xs
+  | otherwise        = []
+myTakeWhile f _      = []
+
+myTakeWhile_fold :: (a -> Bool) -> [a] -> [a]
+myTakeWhile_fold f xs = fst $ foldl' step ([], True) xs
+  where step (taken, taking) x
+          | taking && f x = (taken ++ [x], True )
+          | otherwise     = (taken       , False)
