@@ -73,6 +73,38 @@ myTakeWhile_fold f xs = fst $ foldl' step ([], True) xs
 myGroupBy :: (a -> a -> Bool) -> [a] -> [[a]]
 myGroupBy f xs = fst $ foldl' step ([], xs) xs
   where step (groups, xs) x
-          | null run  = (groups, rest)
+          | null run  = (groups         , rest)
           | otherwise = (groups ++ [run], rest)
           where (run, rest) = span (f x) xs
+
+-- Chapter 4, Section 2, Exercise 6
+myAny :: (a -> Bool) -> [a] -> Bool
+myAny f = foldr (\x b -> f x || b) False
+
+myAny_left :: (a -> Bool) -> [a] -> Bool
+myAny_left f = foldl' (\b x -> b || f x) False
+-- either is acceptable, since OR is both right- and left-associative
+
+myCycle :: [a] -> [a]
+myCycle [] = error "Empty list"
+myCycle xs = foldr (\_ l -> xs ++ l) [] [1..]
+
+myWords :: String -> [String]
+myWords s = fst $ foldl' step ([], s) s
+  where step (words, s) c
+          | null word = (words          , trim rest)
+          | otherwise = (words ++ [word], trim rest)
+          where (word, rest) = break isSpace s
+                trim         = dropWhile isSpace
+                isSpace      = (== ' ')
+
+myLines :: String -> [String]
+myLines s = fst $ foldl' step ([], s) s
+  where step (lines, s) c
+          | null line && (null rest || head rest /= '\n')
+                      = (lines          , trim rest)
+          | otherwise = (lines ++ [line], trim rest)
+          where (line, rest)   = break isLineBreak s
+                isLineBreak    = (== '\n')
+                trim ('\n':cs) = cs
+                trim       cs  = cs
