@@ -31,3 +31,14 @@ identity = foldr (:) []
 
 append :: [a] -> [a] -> [a]
 append xs ys = foldr (:) ys xs
+
+foldl' _    zero []     = zero
+foldl' step zero (x:xs) = let new = step zero x
+                          in  new `seq` foldl' step new xs
+--   0) foldl' (+) 1 (2:[])
+--   1) let new = 1 + 2 in new `seq` foldl' (+) new []
+--   2) foldl' (+) 3 []
+--   3) 3
+
+-- Refer to Chapter 4's final section, "Learning to use seq"
+-- for more info
