@@ -1,9 +1,11 @@
+module PrettyJSON (renderJValue) where
+
 import Numeric (showHex)
 import Data.Bits (shiftR, (.&.))
 import Data.Char (ord)
 
-import SimpleJSON
-import Prettify
+import SimpleJSON (JValue(..))
+import Prettify (Doc, (<>), char, double, fsep, hcat, punctuate, text)
 
 renderJValue :: JValue -> Doc
 renderJValue (JBool True)     = text "true"
