@@ -1,20 +1,20 @@
 module Prettify
   ( Doc
-  , empty
-  , char
-  , text
-  , double
-  , line
   , (<>)
   , (</>)
+  , char
   , compact
+  , double
+  , empty
   , fits
   , flatten
   , fsep
   , hcat
+  , line
   , pretty
   , punctuate
   , softLine
+  , text
   ) where
 
 data Doc = Empty
@@ -25,22 +25,6 @@ data Doc = Empty
          | Union Doc Doc
          deriving (Show)
 
-empty :: Doc
-empty = Empty
-
-char :: Char -> Doc
-char c = Char c
-
-text :: String -> Doc
-text ""  = Empty
-text s = Text s
-
-double :: Double -> Doc
-double d = text (show d)
-
-line :: Doc
-line = Line
-
 (<>) :: Doc -> Doc -> Doc
 Empty <> y = y
 x <> Empty = x
@@ -48,6 +32,9 @@ x <> y = x `Concat` y
 
 (</>) :: Doc -> Doc -> Doc
 x </> y = x <> softLine <> y
+
+char :: Char -> Doc
+char c = Char c
 
 compact :: Doc -> String
 compact x = transform [x]
@@ -60,6 +47,12 @@ compact x = transform [x]
             Line         -> '\n' : transform ds
             a `Concat` b -> transform (a:b:ds)
             _ `Union` b  -> transform (b:ds)
+
+double :: Double -> Doc
+double d = text (show d)
+
+empty :: Doc
+empty = Empty
 
 fits :: Int -> String -> Bool
 w `fits` _ | w < 0 = False
@@ -81,6 +74,9 @@ fsep ds = fold (</>) (empty:ds)
 
 hcat :: [Doc] -> Doc
 hcat = fold (<>)
+
+line :: Doc
+line = Line
 
 pretty :: Int -> Doc -> String
 pretty width x = best 0 [x]
@@ -106,3 +102,7 @@ punctuate p (d:ds) = (d <> p) : punctuate p ds
 softLine :: Doc
 softLine = group line
   where group x = flatten x `Union` x
+
+text :: String -> Doc
+text ""  = Empty
+text s = Text s
