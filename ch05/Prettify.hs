@@ -6,6 +6,7 @@ module Prettify
   , compact
   , double
   , empty
+  , fill
   , fits
   , flatten
   , fsep
@@ -53,6 +54,12 @@ double d = text (show d)
 
 empty :: Doc
 empty = Empty
+
+-- Chapter 5, Exercise 1
+fill :: Int -> Doc -> Doc
+fill w d = d <> text padding
+  where padding = replicate (w - width d) ' '
+          where width = length . compact
 
 fits :: Int -> String -> Bool
 w `fits` _ | w < 0 = False
