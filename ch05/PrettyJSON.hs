@@ -9,16 +9,14 @@ import Prettify (Doc, (<>), char, double, fsep, hcat, punctuate, text,
                  compact, pretty)
 
 renderJValue :: JValue -> Doc
-renderJValue (JBool True)     = text "true"
-renderJValue (JBool False)     = text "false"
+renderJValue (JBool True)  = text "true"
+renderJValue (JBool False) = text "false"
 renderJValue  JNull        = text "null"
 renderJValue (JNumber num) = double num
 renderJValue (JString str) = string str
 renderJValue (JArray ary)  = series '[' ']' renderJValue ary
 renderJValue (JObject obj) = series '{' '}' field obj
-  where field (name, val)  = string name
-                           <> text ": "
-                           <> renderJValue val
+  where field (name, val)  = string name <> text ": " <> renderJValue val
 
 astral :: Int -> Doc
 astral n = smallHex (a + 0xd800) <> smallHex (b + 0xdc00)
@@ -37,7 +35,8 @@ hexEscape c | d < 0x10000 = smallHex d
 oneChar :: Char -> Doc
 oneChar c = case lookup c simpleEscapes of
               Just r -> text r
-              Nothing | mustEscape c -> hexEscape c
+              Nothing
+                | mustEscape c -> hexEscape c
                 | otherwise    -> char c
     where mustEscape c = c < ' ' || c == '\x7f' || c > '\xff'
 
