@@ -104,5 +104,5 @@ softLine = group line
   where group x = flatten x `Union` x
 
 text :: String -> Doc
-text ""  = Empty
-text s = Text s
+text "" = Empty
+text s  = Text s
