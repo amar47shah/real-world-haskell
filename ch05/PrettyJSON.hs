@@ -5,7 +5,7 @@ import Data.Bits (shiftR, (.&.))
 import Data.Char (ord)
 
 import SimpleJSON (JValue(..))
-import Prettify (Doc, (<>), char, double, fsep, hcat, punctuate, text,
+import Prettify (Doc, (<>), (</>), char, double, fsep, hcat, punctuate, text,
                  compact, pretty)
 
 renderJValue :: JValue -> Doc
@@ -16,7 +16,7 @@ renderJValue (JNumber num) = double num
 renderJValue (JString str) = string str
 renderJValue (JArray ary)  = series '[' ']' renderJValue ary
 renderJValue (JObject obj) = series '{' '}' field obj
-  where field (name, val)  = string name <> text ": " <> renderJValue val
+  where field (name, val)  = string (name ++ ": ") </> renderJValue val
 
 series :: Char -> Char -> (a -> Doc) -> [a] -> Doc
 series open close item =
