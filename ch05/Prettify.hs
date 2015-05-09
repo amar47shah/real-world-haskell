@@ -12,6 +12,7 @@ module Prettify
   , fsep
   , hcat
   , line
+  , nest
   , pretty
   , punctuate
   , softLine
@@ -84,6 +85,26 @@ hcat = fold (<>)
 
 line :: Doc
 line = Line
+
+-- Chapter 5, Exercise 2
+nest :: Int -> Doc -> Doc
+nest n = nest'
+  where nest' d@(Concat (Concat (Char open) b) (Char close)) =
+          if matchEnclosers open close
+          then Char open <> indent (nest' b) <> Char close
+          else d
+            where indent d@(Char ','  ) = d
+                  indent d@(Char _    ) = pad <> d
+                  indent d@(Text _    ) = pad <> d
+                  indent   (Concat l r) = indent l <> indent r
+                  indent d              = d
+                  pad = text (replicate n ' ')
+                  matchEnclosers '(' ')' = True
+                  matchEnclosers '[' ']' = True
+                  matchEnclosers '{' '}' = True
+                  matchEnclosers _   _   = False
+        nest' (Concat d1 d2) = nest' d1 <> nest' d2
+        nest' d              = d
 
 pretty :: Int -> Doc -> String
 pretty width x = best 0 [x]

@@ -6,7 +6,7 @@ import Data.Char (ord)
 
 import SimpleJSON (JValue(..))
 import Prettify (Doc, (<>), (</>), char, double, fsep, hcat, punctuate, text,
-                 compact, pretty)
+                 compact, pretty, nest)
 
 renderJValue :: JValue -> Doc
 renderJValue (JBool True)  = text "true"
@@ -53,3 +53,16 @@ string = text . concatMap oneChar
                                     ++ (replicate (4 - length h) '0')
                                     ++ h
                             where h = showHex x ""
+
+--Examples
+a = renderJValue (JArray [JNumber 1, JNumber 2, JNumber 3])
+b = renderJValue (
+      JObject [("one", JNumber 1),
+               ("two", JNumber 2),
+               ("three", JNumber 3),
+               ("array", JArray [JNumber 1, JNumber 2, JNumber 3])])
+c = renderJValue (
+      JObject [("one", JNumber 1),
+               ("array", JArray [JNumber 1])])
+d = char '(' <> text "stuff" <> char ')'
+e = renderJValue (JObject [("array", JArray [JNumber 1])])
