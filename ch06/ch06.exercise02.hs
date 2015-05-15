@@ -1,0 +1,23 @@
+--Chapter 6, Exercise 2
+--
+--Prelude> :type (,)
+--(,) :: a -> b -> (a, b)
+--Prelude> (,) 5 3
+--(5,3)
+--Prelude> (,,) 5 3 2
+--(5,3,2)
+--
+--Simply, (,) is an operator that constructs a 2-tuple from its operands.
+--It can be partially applied:
+--Prelude> let pair = (,) "wine"
+--Prelude> pair "fish"
+--("wine","fish")
+--Prelude> pair "cheese"
+--("wine","cheese")
+--
+--Similarly (,,) constructs a 3-tuple:
+--Prelude> (,,) 1 2 3
+--(1,2,3)
+--Prelude> let bathtub = (,,) "butcher" "baker"
+--Prelude> bathtub "candlestick maker"
+--("butcher","baker","candlestick maker")
