@@ -22,7 +22,7 @@ globToInsensitiveRegex' ('?':cs)       = '.'  :  globToInsensitiveRegex' cs
 globToInsensitiveRegex' ('[':'!':c:cs) = "[^" ++ c : caseCounterpart c : insensitiveCharClass cs
 globToInsensitiveRegex' ('[':c:cs)     = '['  :  c : caseCounterpart c : insensitiveCharClass cs
 globToInsensitiveRegex' ('[':_)        = error "unterminated character class"
-globToInsensitiveRegex' (c:cs)         = '[' : escape c ++ (escape . caseCounterpart) c ++ "]" ++
+globToInsensitiveRegex' (c:cs)         = '[' : escapeInsensitive c ++ "]" ++
                                          globToInsensitiveRegex' cs
 
 globToRegex' :: String -> String
@@ -37,7 +37,12 @@ globToRegex' (c:cs)         = escape c ++ globToRegex' cs
 escape :: Char -> String
 escape c | c `elem` regexChars = '\\' : [c]
          | otherwise           = [c]
-  where regexChars = "\\+()^$.{}]|"
+
+escapeInsensitive :: Char -> String
+escapeInsensitive c | c `elem` regexChars = '\\' : [c]
+                    | otherwise           = c : caseCounterpart c : []
+
+regexChars = "\\+()^$.{}]|"
 
 charClass :: String -> String
 charClass (']':cs) = ']' : globToRegex' cs
