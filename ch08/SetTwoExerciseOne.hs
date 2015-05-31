@@ -1,7 +1,6 @@
--- Set 2, Exercise 1
-module GlobExercise (namesMatching) where
+module SetTwoExerciseOne (namesMatching) where
 
-import GlobRegexExercise (matchesGlob)
+import SetOneExerciseTwo (matchesGlob)
 
 import Control.Exception (handle)
 import Control.Monad (forM)

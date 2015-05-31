@@ -1,5 +1,4 @@
--- Set 1, Exercise 2
-module GlobRegexExercise
+module SetOneExerciseTwo
   (
     globToRegex
   , matchesGlob
