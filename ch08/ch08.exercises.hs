@@ -1,4 +1,4 @@
--- Chapter 8, Section 1, Problem 1
+-- Chapter 8, Set 1, Problem 1
 import GlobRegex(globToRegex)
 import Data.Char(toUpper)
 
@@ -14,3 +14,6 @@ upperRegex = map toUpper . globToRegex
 -- Note that the exception does not occur until upperRegex has processed
 -- almost all of the regex; lazy processing does not catch the unterminated
 -- character class until globToRegex is processing the end of the glob.
+
+-- Chapter 8, Set 2, Problem 2
+-- System.Posix.Files.fileExist is a posix substitute for doesNameExist
