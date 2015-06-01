@@ -1,3 +1,4 @@
+-- Set Three, Exercise 1
 module GlobRegexEither
   (
     globToRegex
@@ -7,35 +8,21 @@ module GlobRegexEither
 import Text.Regex.Posix ((=~))
 
 globToRegex :: String -> Either GlobError String
-globToRegex cs = case globToRegex' cs of
-                   Left  e -> Left  e
-                   Right r -> Right $ '^' : r ++ "$"
+globToRegex cs = handleGlobError (globToRegex' cs) (\r -> '^' : r ++ "$")
 
 matchesGlob :: FilePath -> String -> Either GlobError Bool
-name `matchesGlob` pat = case globToRegex pat of
-                           Left  e -> Left  e
-                           Right r -> Right $ name =~ r
+name `matchesGlob` pat = handleGlobError (globToRegex pat) (\r -> name =~ r)
 
 type GlobError = String
 
 globToRegex' :: String -> Either GlobError String
 globToRegex' ""             = Right ""
-globToRegex' ('*':cs)       = case globToRegex' cs of
-                                Left  e -> Left e
-                                Right r -> Right $ ".*" ++ r
-globToRegex' ('?':cs)       = case globToRegex' cs of
-                                Left  e -> Left e
-                                Right r -> Right $ '.' : r
-globToRegex' ('[':'!':c:cs) = case charClass cs of
-                                Left  e -> Left e
-                                Right r -> Right $ "[^" ++ c : r
-globToRegex' ('[':c:cs)     = case charClass cs of
-                                Left  e -> Left e
-                                Right r -> Right $ '[' : c : r
+globToRegex' ('*':cs)       = handleGlobError (globToRegex' cs) (\r -> ".*" ++ r)
+globToRegex' ('?':cs)       = handleGlobError (globToRegex' cs) (\r -> '.' : r)
+globToRegex' ('[':'!':c:cs) = handleGlobError (charClass cs) (\r -> "[^" ++ c : r)
+globToRegex' ('[':c:cs)     = handleGlobError (charClass cs) (\r -> '[' : c : r)
 globToRegex' ('[':_)        = Left "unterminated character class"
-globToRegex' (c:cs)         = case globToRegex' cs of
-                                Left  e -> Left e
-                                Right r -> Right $ escape c ++ r
+globToRegex' (c:cs)         = handleGlobError (globToRegex' cs) (\r -> escape c ++ r)
 
 escape :: Char -> String
 escape c | c `elem` regexChars = '\\' : [c]
@@ -43,10 +30,11 @@ escape c | c `elem` regexChars = '\\' : [c]
   where regexChars = "\\+()^$.{}]|"
 
 charClass :: String -> Either GlobError String
-charClass (']':cs) = case globToRegex' cs of
-                       Left  e -> Left e
-                       Right r -> Right $ ']' : r
-charClass (c:cs)   = case charClass cs of
-                       Left  e -> Left e
-                       Right r -> Right $ c : r
+charClass (']':cs) = handleGlobError (globToRegex' cs) (\r -> ']' : r)
+charClass (c:cs)   = handleGlobError (charClass cs) (\r -> c : r)
 charClass ""       = Left "unterminated character class"
+
+handleGlobError :: Either GlobError a -> (a -> b) -> Either GlobError b
+handleGlobError either f = case either of
+                             Left  e -> Left  e
+                             Right v -> Right $ f v
