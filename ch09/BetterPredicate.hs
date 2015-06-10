@@ -1,8 +1,8 @@
-import Control.Monad (filterM)
-import System.Directory (Permissions(..), getModificationTime, getPermissions)
-import Data.Time.Clock (UTCTime(..))
-import System.FilePath (takeExtension)
 import Control.Exception (SomeException(..), bracket, handle)
+import Control.Monad (filterM)
+import Data.Time.Clock (UTCTime(..))
+import System.Directory (Permissions(..), getModificationTime, getPermissions)
+import System.FilePath (takeExtension)
 import System.IO (IOMode(..), hClose, hFileSize, openFile)
 
 -- the function we wrote earlier
