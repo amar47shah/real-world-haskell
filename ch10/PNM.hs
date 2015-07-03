@@ -57,3 +57,23 @@ getBytes n string = let count            = fromIntegral n
                      in if L.length prefix < count
                         then Nothing
                         else Just both
+
+(>>?) :: Maybe a -> (a -> Maybe b) -> Maybe b
+Nothing >>? _ = Nothing
+Just v  >>? f = f v
+
+parseP5_take2 :: L.ByteString -> Maybe (Greymap, L.ByteString)
+parseP5_take2 s =
+  matchHeader (L8.pack "P5") s       >>?
+  \s -> skipSpace ((), s)            >>?
+  (getNaturalNumber . snd)           >>?
+  skipSpace                          >>?
+  \(width, s) -> getNaturalNumber s  >>?
+  skipSpace                          >>?
+  \(height, s) -> getNaturalNumber s >>?
+  \(maxGrey, s) -> getBytes 1 s      >>?
+  (getBytes (width * height) . snd)  >>?
+  \(bitmap, s) -> Just (Greymap width height maxGrey bitmap, s)
+
+skipSpace :: (a, L.ByteString) -> Maybe (a, L.ByteString)
+skipSpace (a, s) = Just (a, L8.dropWhile isSpace s)
